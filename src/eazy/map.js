@@ -30,7 +30,7 @@ function arrayMap(array, iteratee) {
   const result = []
   const length = array == null ? 0 : array.length
   let i = -1
-  while(++i < length) {
+  while (++i < length) {
     result[i] = iteratee(array[i], i, array)
   }
 
@@ -41,18 +41,58 @@ function arrayMap(array, iteratee) {
 
 function baseMap(collection, iteratee) {
   const ret = []
-  baseEach(collection, (value, key, collection)=> {
+  baseEach(collection, (value, key, collection) => {
     ret.push(iteratee(value, key, collection))
   })
 
   return ret
 }
 
+function baseEach() { }
+
+// 接收fromRight参数，是否从右边开始遍历
+// 返回一个函数，这个函数接收一个对象，一个迭代函数，一个获取keys的函数
+
+function createBaseFor(fromRight) {
+  return function (object, iteratee, keysFunc) {
+    const iterable = Object(object)
+    const props = keysFunc(iterable)
+    let index = -1
+    let length = props.length
+
+    while(length--) {
+      const key = props[fromRight ? length : ++index]
+      if(iteratee(iterable[key], key, object) === false) {
+        break
+      }
+    }
+
+    return object
+  }
+}
+
+
+const baseFor = createBaseFor(true)
+// baseFor({a: 1, b: 2, c: 3}, (v)=> console.log(v), Object.keys)
+// baseFor(null, (v)=> console.log(v), Object.keys)
+// baseFor(undefined, (v)=> console.log(v), Object.keys)
+baseFor('1abcd', (v) => console.log(v), Object.keys)
+
+
 // lodash
 // function map(collection, iteratee) {
 //   const func = isArray(collection) ? arrayMap : baseMap;
 //   return func(collection, getIteratee(iteratee, 3));
 // }
+
+// map
+//   arrayMap
+//   baseMap
+//     baseEach
+//       createBaseEach 
+//       baseForOwn
+//         baseFor
+//           createBaseFor
 
 
 function square(n) {
