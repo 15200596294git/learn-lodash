@@ -54,14 +54,14 @@ function baseEach() { }
 // 返回一个函数，这个函数接收一个对象，一个迭代函数，一个获取keys的函数
 
 function createBaseFor(fromRight) {
-  return function (object, iteratee, keysFunc) {
+  return function(object, iteratee, keysFunc) {
+    let i = -1
     const iterable = Object(object)
     const props = keysFunc(iterable)
-    let index = -1
     let length = props.length
 
     while(length--) {
-      const key = props[fromRight ? length : ++index]
+      const key = props[fromRight ? length : ++i]
       if(iteratee(iterable[key], key, object) === false) {
         break
       }
@@ -72,7 +72,7 @@ function createBaseFor(fromRight) {
 }
 
 
-const baseFor = createBaseFor(true)
+const baseFor = createBaseFor(false)
 // baseFor({a: 1, b: 2, c: 3}, (v)=> console.log(v), Object.keys)
 // baseFor(null, (v)=> console.log(v), Object.keys)
 // baseFor(undefined, (v)=> console.log(v), Object.keys)
