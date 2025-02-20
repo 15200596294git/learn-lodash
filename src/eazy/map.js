@@ -56,8 +56,8 @@ function baseEach() { }
 function createBaseFor(fromRight) {
   return function(object, iteratee, keysFunc) {
     let i = -1
+    const props = keysFunc(object)
     const iterable = Object(object)
-    const props = keysFunc(iterable)
     let length = props.length
 
     while(length--) {
@@ -72,12 +72,51 @@ function createBaseFor(fromRight) {
 }
 
 
-const baseFor = createBaseFor(false)
+const baseFor = createBaseFor()
 // baseFor({a: 1, b: 2, c: 3}, (v)=> console.log(v), Object.keys)
 // baseFor(null, (v)=> console.log(v), Object.keys)
 // baseFor(undefined, (v)=> console.log(v), Object.keys)
-baseFor('1abcd', (v) => console.log(v), Object.keys)
+// baseFor('1abcd', (v) => console.log(v), Object.keys)
 
+// 接收两个参数，一个对象，一个迭代函数
+// 返回
+function baseForOwn(object, iteratee) {
+  return object && baseFor(object, iteratee, keys)
+}
+
+// 接收两个参数
+// 一个是迭代参数
+// 一个是是否从右边开始
+
+// 返回一个函数，这个函数接收两个参数
+// 如果第一个参数为null，提前返回
+// 如果第一个参数不是类数组，那么直接调用eachFunc
+// 否则，对类数组进行遍历处理
+function createBaseEach(eachFunc, fromRight) {
+  return function(collection, iteratee) {
+    if(collection == null) return collection
+
+    if(!isArrayLike(collection)) {
+      return eachFunc(collection, iteratee)
+    }
+
+    const iterable = Object(collection)
+    let length = collection.length
+    let index = -1
+
+    while(length--) {
+      const key = fromRight ? length : ++index
+      if(iterable(iterable[key], key , collection)) {
+        break
+      }
+      
+    }
+
+    return collection
+  }
+}
+
+var baseEach = createBaseEach(baseForOwn)
 
 // lodash
 // function map(collection, iteratee) {
@@ -90,9 +129,9 @@ baseFor('1abcd', (v) => console.log(v), Object.keys)
 //   baseMap
 //     baseEach
 //       createBaseEach 
-//       baseForOwn
-//         baseFor
-//           createBaseFor
+//         baseForOwn
+//           baseFor
+//             createBaseFor
 
 
 function square(n) {
