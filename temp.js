@@ -105,11 +105,11 @@ function square(n) {
 
 // map([4,8], square)
 // => [16,64]
-console.log("🚀 ~ map([4,8], square):", map([4, 8], square))
+// console.log("🚀 ~ map([4,8], square):", map([4, 8], square))
 
 // map({a: 4, b: 8}, square)
 // => [16,64]
-console.log("🚀 ~ map({a: 4, b: 8}, square):", map({ a: 4, b: 8 }, square))
+// console.log("🚀 ~ map({a: 4, b: 8}, square):", map({ a: 4, b: 8 }, square))
 
 
 var users = [
@@ -124,3 +124,90 @@ var users = [
 // map([], x=> x)
 
 // console.log('🚀 ~ map([], x=> x):', map([], x=> x))
+
+
+
+
+
+
+
+
+
+
+// filter
+function arrayFilter(array, predicate) {
+  let index = -1
+  const result = []
+  const iterable = Object(array)
+  let length = array == null ? 0 : array.length
+
+  while(++index < length) {
+    const value = iterable[index]
+    if(predicate(value, index, array)) {
+      result.push(value)
+    }
+  }
+
+  return result
+}
+
+function baseFilter(collection, predicate) {
+  const result = []
+
+  baseEach(collection, (value, key, collection)=> {
+    if(predicate(value,key,collection)) {
+      result.push(value)
+    }
+  })
+
+  return result
+}
+
+function filter(collection, predicate) {
+  const func = Array.isArray(collection) ? arrayFilter : baseFilter
+
+  return func(collection, predicate)
+}
+
+var users = [
+  { 'user': 'barney', 'age': 36, 'active': true },
+  { 'user': 'fred',   'age': 40, 'active': false }
+];
+
+const person = {
+  a:1,
+  b:2,
+  c:3,
+  d: 1
+}
+ 
+// filter(users, function(o) { return !o.active;  })
+// console.log("🚀 ~ filter(users, function(o) { return !o.active; });:", filter(users, function(o) { return !o.active; }))
+// => objects for ['fred']
+
+filter(person, function filterFunc(v){ return v === 1 } )
+// console.log("🚀 ~ filter(person, (v)=> v === 1 ):", filter(person, (v)=> v === 1 ))
+ 
+// The `_.matches` iteratee shorthand.
+// filter(users, { 'age': 36, 'active': true });
+// console.log("🚀 ~ filter(users, { 'age': 36, 'active': true });:", filter(users, { 'age': 36, 'active': true }))
+// => objects for ['barney']
+ 
+// The `_.matchesProperty` iteratee shorthand.
+// filter(users, ['active', false]);
+// console.log("🚀 ~ filter(users, ['active', false]);:", filter(users, ['active', false]))
+// => objects for ['fred']
+ 
+// The `_.property` iteratee shorthand.
+// filter(users, 'active');
+// console.log("🚀 ~ filter(users, 'active');:", filter(users, 'active'))
+// => objects for ['barney']
+
+
+// 遍历
+// createBaseEach
+//   // 如果不是类数组，就用baseForOwn遍历
+//   baseForOwn 
+//   // 否则，使用while遍历
+//   customWhile
+  
