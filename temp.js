@@ -92,6 +92,25 @@ function baseMap(collection, iteratee) {
   return result
 }
 
+
+function getIteratee() {
+  // lodash.iteratee是用户自定义的，可以看作是全局的一个配置
+  // 那就是获取迭代器，如果用户配置了优先获取用户配置的，否则获取默认的
+  var result = lodash.iteratee || iteratee;
+  // 如果使用的是默认配置，那么就赋值为baseIterate
+  // 否则使用用户的配置
+  result = result === iteratee ? baseIteratee : result;
+  // 如果传入了参数就进行调用，否则之间返回迭代器函数而不调用
+  return arguments.length ? result(arguments[0], arguments[1]) : result;
+}
+
+// 简化版
+// function getIteratee() {
+//   // 这样会出现一个问题就是，当lodash.iteratee === iteratee时，使用的时iteratee而不是baseIteratee,和原有的代码所要表示的功能会不一样
+//   var result = lodash.iteratee || baseIteratee;
+//   return arguments.length ? result(arguments[0], arguments[1]) : result;
+// }
+
 // 
 function map(collection, iteratee) {
   const func = Array.isArray(collection) ? arrayMap : baseMap
